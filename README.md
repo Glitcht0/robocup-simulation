@@ -96,7 +96,10 @@ Execute em **dois terminais diferentes**:
 ```bash
 ./helios-base/src/start.sh -t NomeDoTime
 ```
-
+```bash
+cd py2d/src
+python3 start.py --team_name AdversarioUFGD --rpc-port 50052 --server-host 127.0.0.1 --server-port 6000
+```
 > ⚠️ Cada time deve possuir um nome diferente
 
 ---
