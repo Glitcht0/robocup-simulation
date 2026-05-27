@@ -188,26 +188,30 @@ class GameHandler(pb2_grpc.GameServicer):
         res = self.agents[pairs.register_response.client_id].GetBestPlannerAction(pairs)
         return res
     
-
+# =========================================================================
+#  Função para iniciar o servidor gRPC. Configura o serviço, registra
+# =========================================================================
 def serve(port, shared_lock, shared_number_of_connections, debug):
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=22))
     game_service = GameHandler(shared_lock, shared_number_of_connections, debug)
     pb2_grpc.add_GameServicer_to_server(game_service, server)
     server.add_insecure_port(f'[::]:{port}')
     server.start()
-    main_logger.info(f"Starting server on port {port}")
+    main_logger.info(f"Servidor iniciando na porta: {port}")
     
     server.wait_for_termination()
     
-
+# =========================================================================
+# 🦾 Função principal para iniciar o servidor gRPC. Configura o logger, processa
+# os argumentos de linha de comando e inicia o servidor.
+# =========================================================================
 def main():
     global main_logger, log_dir, file_logging_level, player_file_logging_level
-    parser = argparse.ArgumentParser(description='Run play maker server')
-    parser.add_argument('-p', '--rpc-port', required=False, help='The port of the server', default=50051)
-    parser.add_argument('-l', '--log-dir', required=False, help='The directory of the log file', 
-                        default=f'logs/{datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}')
-    parser.add_argument('--disable-log-file', required=False, help='Disable logging to a file', default=False, action='store_true')
-    parser.add_argument('-d', '--debug', required=False, help='Enable debug mode for agents', default=False, action='store_true')
+    parser = argparse.ArgumentParser(description='Execute o servidor Play Maker')
+    parser.add_argument('-p', '--rpc-port', required=False, help='A porta do servidor', default=50051)
+    parser.add_argument('-l', '--log-dir', required=False, help='O diretório do arquivo de log', default=f'logs/{datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}')
+    parser.add_argument('--disable-log-file', required=False, help='Desativar logging para um arquivo', default=False, action='store_true')
+    parser.add_argument('-d', '--debug', required=False, help='Ativar modo debug para os agentes', default=False, action='store_true')
     
     args = parser.parse_args()
     
@@ -222,6 +226,7 @@ def main():
     shared_lock = Lock()  # Create a Lock for synchronization
     shared_number_of_connections = manager.Value('i', 0)
     
+    # Iniciar o servidor gRPC
     serve(args.rpc_port, shared_lock, shared_number_of_connections, args.debug)
     
 if __name__ == '__main__':

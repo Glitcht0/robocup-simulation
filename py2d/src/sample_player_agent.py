@@ -8,8 +8,8 @@ from service_pb2 import *
 
 class SamplePlayerAgent(IAgent, ABC):
     """
-    A sample player agent implementation that handles decision making and strategy execution.
-    Inherits from IAgent and implements required abstract methods.
+    Uma implementação de exemplo de agente de jogador que lida com a tomada de decisões e a execução de estratégias.
+    Herdamos de IAgent e implementamos os métodos abstratos necessários.
     """
     def __init__(self, logger) -> None:
         """
